@@ -7,11 +7,14 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "@types/download": "^6.2.4",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.37",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
     "chalk": "^4.0.0",
+    "download": "^8.0.0",
+    "node-fetch": "^2.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
@@ -20,6 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "download-data": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node data/download.ts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -39,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@types/node-fetch": "^2.5.7",
     "ts-node": "^8.9.1"
   }
 }

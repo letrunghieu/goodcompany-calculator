@@ -1,17 +1,17 @@
 export interface IInputMaterial {
     iconSprite: string;
-    iconID: string;
+    iconId: string;
     locaString: string;
-    materialID: number;
+    materialId: number;
     materialAmount: number;
 }
 
 export interface IDataAmount {
     dataAmount: number;
     iconSprite: string;
-    iconID: string;
+    iconId: string;
     locaString: string;
-    dataID: number;
+    dataId: number;
 }
 
 export interface IModuleField {
@@ -20,9 +20,9 @@ export interface IModuleField {
 }
 
 export interface IModuleFeature {
-    featureID: number;
+    featureId: number;
     iconSprite: string;
-    iconID: string;
+    iconId: string;
     locaString: string;
     featureValue10: number;
 }
@@ -30,11 +30,11 @@ export interface IModuleFeature {
 export interface IMaterial {
     locaString: string;
     iconSprite: string;
-    iconID: string;
-    materialID: string;
+    iconId: string;
+    materialId: string;
     stackSize: number;
     stackBuyPrice: number;
-    moduleID: number;
+    moduleId: number;
     moduleCategory: string;
     orderInCategory: number;
     inputMaterials: IInputMaterial[];

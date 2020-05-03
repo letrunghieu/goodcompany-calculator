@@ -23,7 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "download-data": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node data/download.ts",
+    "download-data": "ts-node -P tsconfig.ts-node.json data/download.ts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

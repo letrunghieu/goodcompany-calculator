@@ -1,8 +1,8 @@
 import {join} from 'path';
-import {writeFileSync, mkdirSync, existsSync, writeFile, createWriteStream} from 'fs';
+import {writeFileSync, mkdirSync, existsSync} from 'fs';
 import fetch from 'node-fetch';
 import download from 'download';
-import {info} from "./libs/output";
+import {error, info} from "./libs/output";
 import DataBuilder from "./libs/builders/DataBuilder";
 import {IMaterials} from "./libs/models/responses/IMaterials";
 
@@ -12,8 +12,9 @@ const supportedLocales = ['en', 'de', 'fr', 'es', 'pt', 'ru', 'ja', 'zh'];
 
 class Program {
     private dataBuilder: DataBuilder;
-    private sourceUrlPrefix: string;
-    private localeUrlPrefix: string;
+    private readonly sourceUrlPrefix: string;
+    private readonly localeUrlPrefix: string;
+    private readonly iconUrlPrefix: string;
 
     constructor(
         private dataSourceDomain: string,
@@ -22,6 +23,7 @@ class Program {
     ) {
         this.sourceUrlPrefix = `${dataSourceDomain}/gamedata`;
         this.localeUrlPrefix = `${dataSourceDomain}/localization`;
+        this.iconUrlPrefix = `${dataSourceDomain}/icons`;
         this.dataBuilder = new DataBuilder();
     }
 
@@ -29,6 +31,7 @@ class Program {
         this.ensureOutputFolderExist();
         await this.downloadMaterial();
         await this.downloadLocaleFiles();
+        await this.downloadImages();
         this.writeData();
     }
 
@@ -62,12 +65,47 @@ class Program {
         const localeFiles = await Promise.all(this.supportedLocales.map(locale => {
             const localeUrl = `${this.localeUrlPrefix}/goodcompanyBase_${locale}.json`;
             const localeOutputFile = join(localeOutputDirectory, `${locale}.json`);
-            download(localeUrl).pipe(createWriteStream(localeOutputFile));
-            return localeOutputFile;
+
+            return download(localeUrl)
+                .then(buffer => {
+                    writeFileSync(localeOutputFile, buffer);
+
+                    return localeOutputFile;
+                });
         }))
 
         localeFiles.forEach(file => {
-            console.log(` - ${file}`)
+            console.log(` - ${file}`);
+        });
+    }
+
+    private async downloadImages(): Promise<void> {
+        console.log(info("Writing icon images ..."));
+
+        const iconFolder = join(this.outputDirectory, 'icons');
+        this.ensureFolderExist(iconFolder);
+
+        const iconFiles = await Promise.all(Object.values(this.dataBuilder.getImages()).map(iconInfo => {
+            const imageUrl = `${this.iconUrlPrefix}/${iconInfo.sprite}/${iconInfo.name}.png`
+            const imageFolder = join(this.outputDirectory, 'icons', iconInfo.sprite);
+            this.ensureFolderExist(imageFolder);
+
+            const imageOutputFile = join(imageFolder, `${iconInfo.name}.png`);
+            return download(imageUrl)
+                .then(buffer => {
+                    writeFileSync(imageOutputFile, buffer);
+                    return imageOutputFile;
+                })
+                .catch(e => {
+                    console.log(e.message);
+                    console.log(error(` - ${imageUrl}`));
+
+                    return '';
+                });
+        }));
+
+        iconFiles.filter(file => file.length > 0).forEach(file => {
+            console.log(` - ${file}`);
         });
     }
 

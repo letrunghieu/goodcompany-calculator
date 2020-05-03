@@ -1,10 +1,16 @@
 import {IMaterial} from "../../../src/models/IMaterial";
 import {IData} from "../../../src/models/IData";
 import {IMaterials} from "../models/responses/IMaterials";
+import ImageCollector, {IImageDataCollection} from "./ImageCollector";
 
 class DataBuilder {
     private materials: IMaterial[] = [];
     private version: string = '';
+    private imageCollector: ImageCollector;
+
+    constructor() {
+        this.imageCollector = new ImageCollector();
+    }
 
     public getData(): IData {
         return {
@@ -19,18 +25,18 @@ class DataBuilder {
         this.materials = materialsSource.materials.map(material => ({
             locaString: material.loca_string,
             iconSprite: material.icon_sprite,
-            iconID: material.icon_id,
-            materialID: material.material_id,
+            iconId: material.icon_id,
+            materialId: material.material_id,
             stackSize: material.stack_size,
             stackBuyPrice: material.stack_buy_price,
-            moduleID: material.module_id,
+            moduleId: material.module_id,
             moduleCategory: material.module_category,
             orderInCategory: material.order_in_category,
             inputMaterials: material.input_materials ? material.input_materials.map(value => ({
                 iconSprite: value.icon_sprite,
-                iconID: value.icon_id,
+                iconId: value.icon_id,
                 locaString: value.loca_string,
-                materialID: value.material_id,
+                materialId: value.material_id,
                 materialAmount: value.material_amount,
             })) : [],
             outputAmount: material.output_amount,
@@ -39,20 +45,41 @@ class DataBuilder {
             dataAmounts: material.data_amounts ? material.data_amounts.map(value => ({
                 dataAmount: value.data_amount,
                 iconSprite: value.icon_sprite,
-                iconID: value.icon_id,
+                iconId: value.icon_id,
                 locaString: value.loca_string,
-                dataID: value.data_id,
+                dataId: value.data_id,
             })) : [],
             assemblyTime: material.assembly_time,
-            moduleFields: material.module_fields ? material.module_fields.map(value => ({x: value.x, y: value.y})) : [],
+            moduleFields: material.module_fields ? material.module_fields.map(value => ({
+                x: value.x,
+                y: value.y
+            })) : [],
             moduleFeatures: material.module_features ? material.module_features.map(value => ({
-                featureID: value.feature_id,
+                featureId: value.feature_id,
                 iconSprite: value.icon_sprite,
-                iconID: value.icon_id,
+                iconId: value.icon_id,
                 locaString: value.loca_string,
                 featureValue10: value.feature_value,
             })): [],
         }));
+
+        this.materials.forEach(material => {
+            this.imageCollector.addImage({sprite: material.iconSprite, name: material.iconId});
+
+            [
+                material.inputMaterials,
+                material.dataAmounts,
+                material.moduleFeatures,
+            ].forEach(collection => {
+                collection.forEach((m: any) => {
+                    this.imageCollector.addImage({sprite: m.iconSprite, name: m.iconId});
+                });
+            });
+        });
+    }
+
+    public getImages(): IImageDataCollection {
+        return this.imageCollector.getCollection();
     }
 }
 

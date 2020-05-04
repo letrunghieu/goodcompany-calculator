@@ -5,22 +5,34 @@ import logo from './logo.svg';
 import './App.css';
 import {dataRequested, localesRequested, pageInitiated} from "./app/actions/actions";
 import {AppThunkDispatch} from "./app/store";
+import {RootState} from "./app/reducers";
+import LoadingPage from "./app/features/loading/LoadingPage";
+
+type StateProps = {
+    isLoaded: boolean;
+};
 
 type DispatchProps = {
     onLoaded: () => void;
 };
 
-type AppProps = DispatchProps;
+type AppProps = StateProps & DispatchProps;
 
 function App(props: AppProps) {
+    const {isLoaded} = props;
+
     useEffect(() => {
         props.onLoaded();
     }, []);
 
+    if (!isLoaded) {
+        return (<LoadingPage />);
+    }
+
     return (
         <div className="App">
             <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo"/>
+                <img src={logo} className="App-logo" alt="logo" />
                 <p>
                     Edit <code>src/App.tsx</code> and save to reload.
                 </p>
@@ -37,6 +49,12 @@ function App(props: AppProps) {
     );
 }
 
+function mapStateToProps(state: RootState): StateProps {
+    return {
+        isLoaded: state.status.isLocaleLoaded && state.status.isDataLoaded,
+    }
+}
+
 function mapDispatchToProps(dispatch: AppThunkDispatch): DispatchProps {
     return {
         onLoaded: () => {
@@ -47,6 +65,6 @@ function mapDispatchToProps(dispatch: AppThunkDispatch): DispatchProps {
     }
 }
 
-const ConnectedApp = connect<{}, DispatchProps>(null, mapDispatchToProps)(App);
+const ConnectedApp = connect<StateProps, DispatchProps, {}, RootState>(mapStateToProps, mapDispatchToProps)(App);
 
 export default ConnectedApp;

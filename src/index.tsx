@@ -5,7 +5,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {configureStore} from "@reduxjs/toolkit";
-import reducer from "./reducers";
+import reducer from "./app/reducers";
 
 const store = configureStore({reducer: reducer});
 

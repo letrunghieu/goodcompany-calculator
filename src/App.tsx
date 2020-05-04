@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
-import {Action, Dispatch} from "redux";
 
 import logo from './logo.svg';
 import './App.css';
-import {pageInitiated} from "./actions/actions";
+import {dataRequested, pageInitiated} from "./app/actions/actions";
+import {AppThunkDispatch} from "./app/store";
 
 type DispatchProps = {
     onLoaded: () => void;
@@ -37,10 +37,11 @@ function App(props: AppProps) {
     );
 }
 
-function mapDispatchToProps(dispatch: Dispatch<Action<any>>): DispatchProps {
+function mapDispatchToProps(dispatch: AppThunkDispatch): DispatchProps {
     return {
         onLoaded: () => {
-            dispatch(pageInitiated())
+            dispatch(pageInitiated());
+            dispatch(dataRequested());
         },
     }
 }

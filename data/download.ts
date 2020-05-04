@@ -1,4 +1,4 @@
-import {join} from 'path';
+import {join, dirname} from 'path';
 import {writeFileSync, mkdirSync, existsSync} from 'fs';
 import fetch from 'node-fetch';
 import download from 'download';
@@ -7,7 +7,7 @@ import DataBuilder from "./libs/builders/DataBuilder";
 import {IMaterials} from "./libs/models/responses/IMaterials";
 
 const dataSourceDomain = "https://goodcompanygame.com";
-const outputFolder = join(__dirname, 'output');
+const outputFolder = join(dirname(__dirname), 'public', 'data');
 const supportedLocales = ['en', 'de', 'fr', 'es', 'pt', 'ru', 'ja', 'zh'];
 
 class Program {

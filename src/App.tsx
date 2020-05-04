@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 
 import logo from './logo.svg';
 import './App.css';
-import {dataRequested, pageInitiated} from "./app/actions/actions";
+import {dataRequested, localesRequested, pageInitiated} from "./app/actions/actions";
 import {AppThunkDispatch} from "./app/store";
 
 type DispatchProps = {
@@ -42,6 +42,7 @@ function mapDispatchToProps(dispatch: AppThunkDispatch): DispatchProps {
         onLoaded: () => {
             dispatch(pageInitiated());
             dispatch(dataRequested());
+            dispatch(localesRequested('en'));
         },
     }
 }

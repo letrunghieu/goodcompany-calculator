@@ -1,6 +1,7 @@
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import DataApi from "../../api/DataApi";
 import LocalesApi from "../../api/LocalesApi";
+import {initI18n} from "../../helpers/i18n";
 
 const PAGE_INITIATED = 'PAGE_INITIATED';
 const DATA_REQUESTED = 'DATA_REQUESTED';
@@ -12,12 +13,16 @@ export const dataRequested = createAsyncThunk(
     DATA_REQUESTED,
     async () => {
         return await DataApi.instance.getData();
-    }
+    },
 );
 
 export const localesRequested = createAsyncThunk(
     LOCALES_REQUESTED,
     async (locale: string) => {
-        return await LocalesApi.instance.getLocales(locale);
-    }
+        const locales = await LocalesApi.instance.getLocales(locale);
+
+        initI18n(locales);
+
+        return locales;
+    },
 );

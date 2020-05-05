@@ -6,11 +6,13 @@ import {isDistinct} from "../../../helpers/array";
 type MaterialState = {
     selectedCategories: string[];
     searchQuery: string;
+    sorter: string;
 };
 
 const initialState: MaterialState = {
     selectedCategories: [],
     searchQuery: '',
+    sorter: 'name'
 };
 
 const materials = createReducer(initialState, {

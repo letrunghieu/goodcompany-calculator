@@ -46,3 +46,10 @@ export interface IMaterial {
     moduleFields: IModuleField[];
     moduleFeatures: IModuleFeature[];
 }
+
+export interface IMaterialGroup {
+    group: {
+        moduleCategory: string;
+    };
+    materials: IMaterial[]
+}

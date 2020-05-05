@@ -1,17 +1,31 @@
 import React, {FunctionComponent} from "react";
-import {IMaterial} from "../../../models/IMaterial";
+import {useTranslation} from "react-i18next";
+
 import MaterialItem from "./MaterialItem";
+import {GAME_NAMESPACE} from "../../../helpers/i18n";
+import {IMaterialGroup} from "../../../models/IMaterial";
 
 type MaterialListProps = {
-    items: IMaterial[];
+    items: IMaterialGroup[]
 };
 
 const MaterialList:FunctionComponent<MaterialListProps> = props => {
     const {items} = props;
-    const materialElements = items.map(item => (<MaterialItem key={item.materialId} item={item} />));
+    const {t} = useTranslation(GAME_NAMESPACE);
+
+    const materialGroupsElements = items.map(group => {
+        const materialElements = group.materials.map(item => (<MaterialItem key={item.materialId} item={item} />));
+        return (
+            <div key={group.group.moduleCategory}>
+                <h4>{t(group.group.moduleCategory)}</h4>
+                {materialElements}
+            </div>
+        );
+    });
+
     return (
         <div>
-            {materialElements}
+            {materialGroupsElements}
         </div>
     );
 };

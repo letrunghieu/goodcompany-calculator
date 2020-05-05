@@ -1,13 +1,14 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
+import {Container, CssBaseline, AppBar, Toolbar, Typography} from '@material-ui/core'
 
-import logo from './logo.svg';
 import './App.css';
 import {dataRequested, localesRequested, pageInitiated} from "./app/actions/actions";
 import {AppThunkDispatch} from "./app/store";
 import {RootState} from "./app/reducers";
 import LoadingPage from "./app/features/loading/LoadingPage";
 import MaterialsListPage from "./app/features/materials/MaterialsListPage";
+import {makeStyles} from "@material-ui/core/styles";
 
 type StateProps = {
     isLoaded: boolean;
@@ -20,20 +21,38 @@ type DispatchProps = {
 type AppProps = StateProps & DispatchProps;
 
 function App(props: AppProps) {
-    const {isLoaded} = props;
+    const {isLoaded, onLoaded} = props;
+    const classes = styles();
 
     useEffect(() => {
-        props.onLoaded();
-    }, []);
+        onLoaded();
+    }, [onLoaded]);
 
     if (!isLoaded) {
         return (<LoadingPage />);
     }
 
     return (
-        <MaterialsListPage />
+        <div>
+            <CssBaseline />
+            <Container maxWidth={false}>
+                <AppBar>
+                    <Toolbar variant={"dense"}>
+                        <Typography variant={"h6"}>Good Company Calculator</Typography>
+                    </Toolbar>
+                </AppBar>
+                <div>
+                    <div className={classes.toolbar} />
+                    <MaterialsListPage />
+                </div>
+            </Container>
+        </div>
     );
 }
+
+const styles = makeStyles(theme => ({
+    toolbar: theme.mixins.toolbar,
+}));
 
 function mapStateToProps(state: RootState): StateProps {
     return {
